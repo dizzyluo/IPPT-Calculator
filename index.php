@@ -169,22 +169,22 @@
 			}
 
 			$scope.getAward = function (pts) {
-				var gold = ($scope.person.commando) ? 85 : 80;
-				console.log(gold);
+				var gold = ($scope.person.commando) ? 85 : 81;
+				
 				if (pts >= gold) {
 					$scope.comments = '';
 					return "Gold";
-				} else if (pts >= 70) {
+				} else if (pts >= 71) {
 					$scope.comments = (gold - pts) + " more points to GOLD";
 					return "Silver";
-				} else if (pts >= 60) {
-					$scope.comments = (70 - pts) + " more points to SILVER";
+				} else if (pts >= 61) {
+					$scope.comments = (71 - pts) + " more points to SILVER";
 					return "Pass with Incentive";
-				} else if (pts >= 50) {
-					$scope.comments = (60 - pts) + " more points to INCENTIVE";
+				} else if (pts >= 51) {
+					$scope.comments = (61 - pts) + " more points to INCENTIVE";
 					return "Pass";
 				} else {
-					$scope.comments = (50 - pts) + " more points to PASS";
+					$scope.comments = (51 - pts) + " more points to PASS";
 					return "Fail";
 				}
 			}
