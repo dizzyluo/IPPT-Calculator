@@ -192,7 +192,7 @@
 			$scope.getStaticPoints = function(age, count) {
 				var idx = (age - 22 < 0) ? 0 : (age - 22);
 				var minReps = staticRepArray[idx];
-				var pointsIdx = ((count - minReps) > staticPointArray.length) ? staticPointArray.length - 1: count - minReps;
+				var pointsIdx = ((count - minReps) >= staticPointArray.length) ? staticPointArray.length - 1: count - minReps;
 				return (staticPointArray[pointsIdx]) ? staticPointArray[pointsIdx] : 0;
 			}
 
