@@ -26,9 +26,6 @@
 		label.score {
 			margin-left: 10px;
 		}
-		html, body {
-			overflow-x: hidden;
-		}
 		.meter {
 			width: 100%;
 		}
@@ -46,7 +43,7 @@
 		}
 		</style>
 	</head>
-	<body ng-app="ipptApp" style="margin-top: 20px;">
+	<body ng-app="ipptApp">
 		<div class="row" ng-controller="calculatorCtrl">
 			<div class="medium-6 columns medium-offset-3">
 				<h3>IPPT Score Calculator</h3>
@@ -71,7 +68,7 @@
 						<label class="inline">Sit Ups</label>
 					</div>
 					<div class="small-4 columns left">	
-						<input type="number" ng-disabled="!person.age" ng-model="person.sitUpCount" ng-change="calculate()">
+						<input type="tel" ng-disabled="!person.age" ng-model="person.sitUpCount" ng-change="calculate()">
 					</div>
 				</div>
 				<div class="row collapse" ng-hide="!person.age || !person.sitUpCount">
@@ -236,7 +233,7 @@
 
 				var time = $scope.pad(p.runMin,2) + '' + $scope.pad(p.runSec,2);
 				points.running = $scope.getRunningPoints(p.age, time);
-				$scope.runMeter = $scope.getRunningMeter(p.age, time, 7);
+				$scope.runMeter = $scope.getRunningMeter(p.age, time, 6);
 
 				points.total = points.sitUp + points.pushUp + points.running;
 				points.award = $scope.getAward(points.total);
