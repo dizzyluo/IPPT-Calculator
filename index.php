@@ -12,6 +12,14 @@
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.3.1/css/foundation.min.css">
 		<script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.3.1/js/foundation.min.js"></script>
 		<style>
+		input[type="tel"], label {
+			margin-bottom: 8px!important;
+			padding-bottom: 9px!important;
+		}
+		td.current {
+			background-color: #eee!important;
+			color: green!important;
+		}
 		label {
 			font-weight: bold;
 		}
@@ -20,6 +28,21 @@
 		}
 		html, body {
 			overflow-x: hidden;
+		}
+		.meter {
+			width: 100%;
+		}
+		.meter td {
+			text-align: center;
+			padding: 2px;
+			color: #999;
+			border-right: 1px solid #eee;
+			font-size: 0.9em;
+		}
+		.meter td.head {
+			width: 30px;
+			text-align: left;
+			font-weight: bold;
 		}
 		</style>
 	</head>
@@ -39,7 +62,7 @@
 
 				<div class="row collapse">
 					<div class="small-12 columns">	
-						<input id="commando" ng-model="person.commando" type="checkbox" ng-change="calculate()"><label for="commando">Commando / Diver / Guard</label>
+						<input id="commando" ng-model="person.commando" type="checkbox" ng-change="calculate()"><label for="commando">Commando / Diver / Guardsman</label>
 					</div>
 				</div>
 
@@ -47,11 +70,22 @@
 					<div class="small-4 columns">	
 						<label class="inline">Sit Ups</label>
 					</div>
-					<div class="small-4 columns">	
-						<input type="tel" ng-model="person.sitUpCount" ng-change="calculate()">
+					<div class="small-4 columns left">	
+						<input type="tel" ng-disabled="!person.age" ng-model="person.sitUpCount" ng-change="calculate()">
 					</div>
-					<div class="small-3 columns">
-						<label class="inline score">{{ points.sitUp }} / 25</label>
+				</div>
+				<div class="row collapse" ng-hide="!person.age || !person.sitUpCount">
+					<div class="small-12 columns">
+						<table class="meter">
+							<tr>
+								<td class="head">Reps</td>
+								<td ng-repeat="m in sitUpMeter.reps track by $index" ng-class="{ 'current': m == person.sitUpCount }">{{m}}</td>
+							</tr>
+							<tr>
+								<td class="head">Pts</td>
+								<td ng-repeat="p in sitUpMeter.points track by $index" ng-class="{ 'current': p == points.sitUp }">{{p}}</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 
@@ -59,11 +93,22 @@
 					<div class="small-4 columns">	
 						<label class="inline">Push Ups</label>
 					</div>
-					<div class="small-4 columns">	
-						<input type="tel" ng-model="person.pushUpCount" ng-change="calculate()">
+					<div class="small-4 columns left">	
+						<input type="tel" ng-disabled="!person.age" ng-model="person.pushUpCount" ng-change="calculate()">
 					</div>
-					<div class="small-3 columns">
-						<label class="inline score">{{ points.pushUp }} / 25</label>
+				</div>
+				<div class="row collapse" ng-hide="!person.age || !person.pushUpCount">
+					<div class="small-12 columns">
+						<table class="meter">
+							<tr>
+								<td class="head">Reps</td>
+								<td ng-repeat="m in pushUpMeter.reps track by $index" ng-class="{ 'current': m == person.pushUpCount }">{{m}}</td>
+							</tr>
+							<tr>
+								<td class="head">Pts</td>
+								<td ng-repeat="p in pushUpMeter.points track by $index" ng-class="{ 'current': p == points.pushUp }">{{p}}</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 
@@ -72,29 +117,40 @@
 					<div class="small-4 columns">
 						<label class="inline">2.4km Run</label>	
 					</div>
-					<div class="small-2 columns">
-						<input type="tel" placeholder="min" ng-model="person.runMin" ng-change="calculate()">
+					<div class="small-2 columns left">
+						<input type="tel" ng-disabled="!person.age" placeholder="min" ng-model="person.runMin" ng-change="calculate()">
 					</div>
-					<div class="small-2 columns">
-						<input type="tel" placeholder="sec" ng-model="person.runSec" ng-change="calculate()">
-					</div>
-					<div class="small-3 columns">
-						<label class="inline score">{{ points.running }} / 50</label>
+					<div class="small-2 columns left">
+						<input type="tel" ng-disabled="!person.age" placeholder="sec" ng-model="person.runSec" ng-change="calculate()">
 					</div>
 				</div>
-
-				<p ng-show="points.total > 0" class="alert-box" ng-class="{ 'Gold':'success', 'Fail': 'alert' }[points.award]">
-					{{ points.total }} Points - {{ points.award }}<br ng-show="comments != ''"/>{{ comments }}
-				</p>
+				<div class="row collapse" ng-hide="!person.age || !person.runMin || !person.runSec">
+					<div class="small-12 columns">
+						<table class="meter">
+							<tr>
+								<td class="head">Time</td>
+								<td ng-repeat="m in runMeter.timing track by $index" ng-class="{ 'current': m.current }">{{m.timing}}</td>
+							</tr>
+							<tr>
+								<td class="head">Pts</td>
+								<td ng-repeat="p in runMeter.points track by $index" ng-class="{ 'current': p == points.running }">{{p}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				
+				<h4 ng-show="points.total > 0" class="left">
+					{{ points.total }}pts ({{ points.award }}) <small>{{ comments }}</small>
+				</h4>
 			</div>
-			<div class="row">
-				<div class="small-12 medium-6 columns medium-offset-3">
-					<hr>
-					<small>
-						Built in AngularJS by <a href="https://www.linkedin.com/in/johnldz" target="_blank">John Luo</a>. Source code on <a href="https://github.com/johnldz/IPPT-Calculator" target="_blank">GitHub</a>.<br/>
-						Questions, comments? Reach me at <a href="mailto:johnldz@icloud.com">johnldz@icloud.com</a>
-					</small>
-				</div>
+		</div>
+		<div class="row">
+			<div class="medium-6 columns medium-offset-3">
+				<hr>
+				<small>
+					Built in AngularJS by <a href="https://www.linkedin.com/in/johnldz" target="_blank">John Luo</a>. Source code on <a href="https://github.com/johnldz/IPPT-Calculator" target="_blank">GitHub</a>.<br/>
+					Questions, comments? Reach me at <a href="mailto:johnldz@icloud.com">johnldz@icloud.com</a>
+				</small>
 			</div>
 		</div>
 
@@ -110,11 +166,20 @@
 			var runTimeArray = [1610,1620,1620,1620,1630,1630,1630,1640,1640,1640,1650,1650,1650,1700,1700,1700,1710,1710,1710,1720,1720,1720,1730,1730,1730,1740,1740,1740,1750,1750,1750,1800,1800,1800,1810,1810,1810,1820,1820,1820];
 
 			//
-			var runSecondsArray = [];
 			$scope.convertToSeconds = function(time) {
 				var minutes = String(time).substr(0, 2);
 				var seconds = String(time).substr(2);
 				return parseInt(minutes) * 60 + parseInt(seconds)
+			}
+			$scope.secondsToMinuteSeconds = function(seconds) {
+				var minutes = Math.floor(parseInt(seconds) / 60); 
+				var seconds = parseInt(seconds) % 60;
+				return $scope.pad(minutes, 2) + '' + $scope.pad(seconds, 2);
+			}
+			$scope.secondsToString = function(seconds) {
+				var minutes = Math.floor(seconds / 60); 
+				var seconds = seconds % 60;
+				return minutes + ':' + $scope.pad(seconds, 2);
 			}
 
 			$scope.comments = '';
@@ -134,21 +199,29 @@
 				total: 0,
 				award: "-"
 			};
+			$scope.sitUpMeter = { reps: [], points: [] };
+			$scope.pushUpMeter = { reps: [], points: [] };
+			$scope.runMeter = { timing: [], points: [] };
 
 			$scope.pad = function (n, width, z) {
 			  z = z || '0';
 			  n = n + '';
 			  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 			}
+
 			$scope.calculate = function() {
 				var p = $scope.person;
 				var points = $scope.points;
 				
 				points.sitUp = $scope.getStaticPoints(p.age, p.sitUpCount);
+				$scope.sitUpMeter = $scope.getStaticMeter(p.age, p.sitUpCount, 10);
+				
 				points.pushUp = $scope.getStaticPoints(p.age, p.pushUpCount);
+				$scope.pushUpMeter = $scope.getStaticMeter(p.age, p.pushUpCount, 10);
 				
 				var time = $scope.pad(p.runMin,2) + '' + $scope.pad(p.runSec,2);
 				points.running = $scope.getRunningPoints(p.age, time);
+				$scope.runMeter = $scope.getRunningMeter(p.age, time, 7);
 
 				points.total = points.sitUp + points.pushUp + points.running;
 				points.award = $scope.getAward(points.total);
@@ -183,16 +256,62 @@
 				return (staticPointArray[pointsIdx]) ? staticPointArray[pointsIdx] : 0;
 			}
 
-			$scope.getRunningPoints = function(age, timing) {
+			$scope.getStaticMeter = function(age, reps, range) {
+				var total = 0
+				var obj = {
+					reps: [], points: []
+				}
+				var start = (reps - range * 0.5 < 0) ? 0 : reps - range * 0.5 + 1;
+				var end = start + range;
+				for (var i = start; i < end; i++) {
+					var rep = i;
+					if (rep < 0) continue;
+					var pts = $scope.getStaticPoints(age, rep);
+					obj.reps.push(rep);
+					obj.points.push(pts);
+				}
+				return obj;
+			}
+
+			$scope.getRunningScoreIndex = function(age, timing) {
 				var timingSeconds = $scope.convertToSeconds(timing);
 				var idx = (age - 22 < 0) ? 0 : (age - 22);
 				var minSeconds = $scope.convertToSeconds(runTimeArray[idx]);
 				var difference = ((minSeconds - timingSeconds) < 0) ? 0 : minSeconds - timingSeconds;
 				var newIdx = difference * 0.1
 				if (newIdx >= runPointArray.length) {
-					var newIdx = runPointArray.length -1;
+					newIdx = runPointArray.length - 1;
 				}
-				return (runPointArray[Math.floor(newIdx)]) ? runPointArray[Math.floor(newIdx)] : 0;
+				return Math.floor(newIdx);
+			}
+
+			$scope.getRunningPoints = function(age, timing) {
+				var newIdx = $scope.getRunningScoreIndex(age, timing);
+				return (runPointArray[newIdx]) ? runPointArray[newIdx] : 0;
+			}
+
+			$scope.getRunningMeter = function(age, timing, range) {
+				var obj = { timing: [], points: [] };
+				var scoreIdx = $scope.getRunningScoreIndex(age, timing);
+				var currentScore = (runPointArray[scoreIdx]) ? runPointArray[scoreIdx] : 0;
+
+				var timingRange = $scope.pad(Math.ceil(timing/10)*10, 4);
+				var timingRangeInSec = $scope.convertToSeconds(timingRange);
+				
+				var startTime = timingRangeInSec - (range * 0.5 * 10);
+				var endTime = startTime + (range * 10);
+
+				for (var i = startTime; i < endTime; i += 10) {
+					var timeInput = $scope.secondsToMinuteSeconds(i);
+					var pts = $scope.getRunningPoints(age, timeInput);
+					obj.points.push(pts);
+					var timeObj = { timing: $scope.secondsToString(i) };
+					if (pts == currentScore) {
+						timeObj.current = true;
+					};
+					obj.timing.push(timeObj);
+				}
+				return obj;
 			}
 			$scope.calculate();
 		}]);
@@ -201,5 +320,16 @@
 		for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="//cdn.mxpnl.com/libs/mixpanel-2.2.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
 		mixpanel.init("c7e31f0de78ba726e76fc8dc57892cae");
 		mixpanel.track("Visit")</script><!-- end Mixpanel -->
+
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-52636738-2', 'auto');
+		  ga('send', 'pageview');
+
+		</script>
 	</body>
 </html>
