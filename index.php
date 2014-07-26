@@ -298,7 +298,7 @@
 				var timingRange = $scope.pad(Math.ceil(timing/10)*10, 4);
 				var timingRangeInSec = $scope.convertToSeconds(timingRange);
 				
-				var startTime = timingRangeInSec - (range * 0.5 * 10);
+				var startTime = timingRangeInSec - (Math.round(range * 0.5) * 10);
 				var endTime = startTime + (range * 10);
 
 				for (var i = startTime; i < endTime; i += 10) {
