@@ -71,7 +71,7 @@
 						<label class="inline">Sit Ups</label>
 					</div>
 					<div class="small-4 columns left">	
-						<input type="tel" ng-disabled="!person.age" ng-model="person.sitUpCount" ng-change="calculate()">
+						<input type="number" ng-disabled="!person.age" ng-model="person.sitUpCount" ng-change="calculate()">
 					</div>
 				</div>
 				<div class="row collapse" ng-hide="!person.age || !person.sitUpCount">
@@ -124,7 +124,7 @@
 						<input type="tel" ng-disabled="!person.age" placeholder="sec" ng-model="person.runSec" ng-change="calculate()">
 					</div>
 				</div>
-				<div class="row collapse" ng-hide="!person.age || !person.runMin || !person.runSec">
+				<div class="row collapse" ng-hide="!person.age || runMeter.timing.length == 0">
 					<div class="small-12 columns">
 						<table class="meter">
 							<tr>
@@ -213,19 +213,33 @@
 				var p = $scope.person;
 				var points = $scope.points;
 				
+				if (p.age < 0) p.age = 18;
+				if (p.age > 60) p.age = 60;
+
+				if (p.sitUpCount > 99) p.sitUpCount = 99;
+				if (p.sitUpCount < 0) p.sitUpCount = 0;
+				
 				points.sitUp = $scope.getStaticPoints(p.age, p.sitUpCount);
 				$scope.sitUpMeter = $scope.getStaticMeter(p.age, p.sitUpCount, 10);
 				
+				if (p.pushUpCount > 99) p.pushUpCount = 99;
+
+				if (p.pushUpCount < 0) p.pushUpCount = 0;
+
 				points.pushUp = $scope.getStaticPoints(p.age, p.pushUpCount);
 				$scope.pushUpMeter = $scope.getStaticMeter(p.age, p.pushUpCount, 10);
 				
+				if (p.runMin > 30) p.runMin = 30;
+				if (p.runSec > 59) p.runSec = 0;
+				if (p.runMin < 0) p.runMin = 0;
+				if (p.runSec < 0) p.runSec = 0;
+
 				var time = $scope.pad(p.runMin,2) + '' + $scope.pad(p.runSec,2);
 				points.running = $scope.getRunningPoints(p.age, time);
 				$scope.runMeter = $scope.getRunningMeter(p.age, time, 7);
 
 				points.total = points.sitUp + points.pushUp + points.running;
 				points.award = $scope.getAward(points.total);
-
 			}
 
 			$scope.getAward = function (pts) {
@@ -292,6 +306,7 @@
 
 			$scope.getRunningMeter = function(age, timing, range) {
 				var obj = { timing: [], points: [] };
+
 				var scoreIdx = $scope.getRunningScoreIndex(age, timing);
 				var currentScore = (runPointArray[scoreIdx]) ? runPointArray[scoreIdx] : 0;
 
@@ -313,7 +328,7 @@
 				}
 				return obj;
 			}
-			$scope.calculate();
+
 		}]);
 		</script>
 		<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");
